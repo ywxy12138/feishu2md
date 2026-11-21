@@ -175,6 +175,11 @@ func (p *Parser) ParseDocxBlock(b *lark.DocxBlock, indentLevel int) string {
 			buf.WriteString("- [ ] ")
 		}
 		buf.WriteString(p.ParseDocxBlockText(b.Todo))
+		// Todo blocks can own child tasks, just like bullet and ordered lists.
+		for _, childId := range b.Children {
+			childBlock := p.blockMap[childId]
+			buf.WriteString(p.ParseDocxBlock(childBlock, indentLevel+1))
+		}
 	case lark.DocxBlockTypeDivider:
 		buf.WriteString("---\n")
 	case lark.DocxBlockTypeImage:
