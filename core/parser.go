@@ -159,7 +159,8 @@ func (p *Parser) ParseDocxBlock(b *lark.DocxBlock, indentLevel int) string {
 		buf.WriteString(p.ParseDocxBlockOrdered(b, indentLevel))
 	case lark.DocxBlockTypeCode:
 		buf.WriteString("```" + DocxCodeLang2MdStr[b.Code.Style.Language] + "\n")
-		buf.WriteString(strings.TrimSpace(p.ParseDocxBlockText(b.Code)))
+		// Remove only the text parser's final newline; code indentation is significant.
+		buf.WriteString(strings.TrimSuffix(p.ParseDocxBlockText(b.Code), "\n"))
 		buf.WriteString("\n```\n")
 	case lark.DocxBlockTypeQuote:
 		buf.WriteString("> ")
